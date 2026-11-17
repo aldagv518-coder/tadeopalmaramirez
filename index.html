@@ -1,0 +1,1687 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TREPOWAR · Sífilis: reconoce, diagnostica y previene</title>
+<style>
+:root{
+  --bg:#070b14; --panel:#0f1626; --panel2:#151f36; --line:#22304d;
+  --cyan:#22e0ff; --magenta:#ff2f8e; --yellow:#ffd23f;
+  --green:#3ddc84; --red:#ff4d5e; --purple:#b78cff;
+  --text:#e6f1ff; --muted:#8aa0c0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:"Trebuchet MS",Verdana,sans-serif;color:var(--text);
+  min-height:100vh;background:var(--bg);
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(34,224,255,.10), transparent 45%),
+    radial-gradient(circle at 90% 92%, rgba(255,47,142,.10), transparent 45%),
+    linear-gradient(rgba(34,224,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,224,255,.03) 1px, transparent 1px);
+  background-size:auto,auto,42px 42px,42px 42px;
+  display:flex;align-items:flex-start;justify-content:center;padding:18px;
+}
+#app{width:100%;max-width:960px}
+.screen{display:none;animation:fade .4s ease}
+.screen.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ============ INICIO ============ */
+#screen-start{text-align:center;padding:10px 0}
+.logo-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:20px}
+.spiro{width:min(320px,80%);color:var(--magenta);filter:drop-shadow(0 0 14px rgba(255,47,142,.55))}
+.spiro path{stroke-dasharray:16 10;animation:dash 2.6s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-260}}
+.logo{
+  font-size:clamp(38px,9vw,68px);font-weight:900;letter-spacing:5px;
+  background:linear-gradient(90deg,var(--cyan),var(--magenta));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.tagline{color:var(--muted);letter-spacing:2px;font-size:12.5px;text-transform:uppercase}
+.audience-badge{
+  display:inline-block;margin-top:10px;padding:6px 16px;border-radius:99px;
+  background:rgba(183,140,255,.14);border:1px solid rgba(183,140,255,.5);
+  color:#d8c4ff;font-size:12.5px;font-weight:bold;letter-spacing:1px;
+}
+.intro-card{
+  text-align:left;max-width:680px;margin:0 auto 18px;
+  background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px 24px;
+}
+.intro-card h3{color:var(--cyan);font-size:13px;letter-spacing:1.5px;margin-bottom:10px;text-transform:uppercase}
+.intro-card p{font-size:14px;line-height:1.7;color:#c8d8ee;margin-bottom:12px}
+.intro-card p:last-child{margin-bottom:0}
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:14px}
+.feat{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:12.5px}
+.feat b{display:block;color:var(--yellow);font-size:14px;margin-bottom:2px}
+.feat span{color:var(--muted)}
+.ai-note{
+  max-width:680px;margin:0 auto 20px;padding:12px 18px;border-radius:12px;
+  background:rgba(255,210,63,.06);border:1px dashed rgba(255,210,63,.4);
+  font-size:12px;color:#d8c8a0;line-height:1.6;text-align:left;
+}
+.ai-note b{color:var(--yellow)}
+.gallery-preview{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));
+  gap:8px;max-width:680px;margin:0 auto 22px;
+}
+.gallery-preview div{
+  background:var(--panel2);border:1px solid var(--line);border-radius:10px;
+  padding:8px;aspect-ratio:1;display:grid;place-items:center;font-size:24px;
+}
+
+/* ============ BOTONES ============ */
+.btn{
+  font-family:inherit;font-size:16px;font-weight:bold;letter-spacing:1px;
+  padding:15px 42px;border:none;border-radius:14px;cursor:pointer;
+  background:linear-gradient(135deg,var(--cyan),#0a8fb5);color:#00121a;
+  box-shadow:0 8px 24px rgba(34,224,255,.3);transition:.2s;
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(34,224,255,.45)}
+.btn.small{padding:10px 22px;font-size:13.5px}
+.ghost{
+  background:transparent;border:1px solid var(--line);color:var(--muted);
+  padding:8px 14px;border-radius:10px;font-family:inherit;font-size:13px;cursor:pointer;transition:.2s;
+}
+.ghost:hover{border-color:var(--cyan);color:var(--cyan)}
+
+/* ============ HUD ============ */
+.hud{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.hud-brand{
+  font-weight:900;letter-spacing:3px;font-size:18px;
+  background:linear-gradient(90deg,var(--cyan),var(--magenta));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.hud-level{
+  padding:6px 14px;border-radius:99px;font-size:12px;font-weight:bold;
+  background:rgba(255,47,142,.14);border:1px solid rgba(255,47,142,.45);color:#ffb3d4;
+}
+.hud-stats{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.stat-pill{
+  padding:6px 14px;border-radius:99px;font-size:12.5px;font-weight:bold;
+  background:rgba(255,210,63,.12);border:1px solid rgba(255,210,63,.4);color:var(--yellow);
+  transition:transform .25s;
+}
+.stat-pill.bump{transform:scale(1.15)}
+
+/* ============ LEVEL TRACK ============ */
+.level-track{display:flex;gap:6px;margin-bottom:8px}
+.level-track .seg{
+  flex:1;height:8px;border-radius:99px;background:#1a2540;transition:.4s;
+}
+.level-track .seg.done{background:var(--green);box-shadow:0 0 10px rgba(61,220,132,.5)}
+.level-track .seg.now{background:linear-gradient(90deg,var(--cyan),var(--magenta));box-shadow:0 0 12px rgba(34,224,255,.5)}
+.progress-info{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);
+  letter-spacing:.5px;margin-bottom:12px;text-transform:uppercase;flex-wrap:wrap;gap:6px}
+
+/* ============ CARD ============ */
+.card{
+  background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px;
+  box-shadow:0 10px 40px rgba(0,0,0,.3);
+}
+.card-head{display:flex;gap:14px;align-items:flex-start;margin-bottom:12px}
+.card-icon{
+  font-size:28px;flex:0 0 54px;height:54px;display:grid;place-items:center;
+  background:var(--panel2);border:1px solid var(--line);border-radius:12px;
+}
+.q-text{font-size:16.5px;line-height:1.5;padding-top:6px}
+.key-badge{
+  display:inline-block;margin-left:8px;padding:2px 8px;border-radius:6px;
+  background:rgba(255,210,63,.18);border:1px solid rgba(255,210,63,.5);
+  color:var(--yellow);font-size:10.5px;font-weight:bold;letter-spacing:.5px;
+  vertical-align:middle;
+}
+
+/* ============ IMAGEN DIDÁCTICA ============ */
+.img-box{
+  margin:6px 0 14px;padding:14px;border-radius:16px;
+  background:linear-gradient(135deg,#0a1220,#0d1830);
+  border:1px solid var(--line);
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  position:relative;overflow:hidden;
+}
+.img-box::before{
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(34,224,255,.06), transparent 50%),
+    radial-gradient(circle at 85% 80%, rgba(255,47,142,.06), transparent 50%);
+  pointer-events:none;
+}
+.img-box svg{width:100%;max-width:460px;height:auto;position:relative;z-index:1}
+.img-caption{
+  font-size:11px;color:var(--muted);text-align:center;letter-spacing:.3px;
+  line-height:1.5;max-width:540px;position:relative;z-index:1;
+  padding:0 8px;
+}
+.img-caption b{color:var(--yellow)}
+.img-caption i{color:#a8bcd8}
+
+/* ============ OPCIONES ============ */
+.options{display:flex;flex-direction:column;gap:9px}
+.opt{
+  display:flex;gap:12px;align-items:center;width:100%;text-align:left;
+  padding:13px 15px;background:var(--panel2);border:1px solid var(--line);
+  border-radius:12px;color:var(--text);font-size:14px;font-family:inherit;
+  cursor:pointer;transition:.18s;line-height:1.4;
+}
+.opt:hover:not(:disabled){background:#1a2744;border-color:var(--cyan);transform:translateX(4px)}
+.opt:disabled{cursor:default}
+.opt .key{
+  width:26px;height:26px;flex:0 0 26px;display:grid;place-items:center;
+  border-radius:8px;background:#0a1220;font-weight:bold;font-size:13px;color:var(--cyan);
+}
+.opt.correct{background:rgba(61,220,132,.16);border-color:var(--green);color:#b9ffd8}
+.opt.correct .key{background:var(--green);color:#04120a}
+.opt.wrong{background:rgba(255,77,94,.16);border-color:var(--red);color:#ffc3c8}
+.opt.wrong .key{background:var(--red);color:#1a0406}
+.opt.dim{opacity:.5}
+
+/* ============ FEEDBACK ============ */
+.feedback{margin-top:14px;display:none;border-radius:14px;padding:15px;
+  border:1px solid var(--line);background:#0b1322}
+.feedback.show{display:block;animation:fade .3s}
+.feedback.ok{border-color:rgba(61,220,132,.5);background:rgba(61,220,132,.07)}
+.feedback.bad{border-color:rgba(255,77,94,.5);background:rgba(255,77,94,.07)}
+.feedback.hint{border-color:rgba(255,210,63,.5);background:rgba(255,210,63,.07)}
+.fb-title{font-weight:bold;margin-bottom:7px;font-size:14.5px}
+.fb-text{font-size:13.5px;line-height:1.6;color:#c8d8ee}
+.fb-text b{color:var(--yellow)}
+.btn-next{
+  margin-top:12px;padding:10px 24px;border:none;border-radius:11px;cursor:pointer;
+  font-family:inherit;font-weight:bold;font-size:13.5px;letter-spacing:.5px;
+  background:linear-gradient(135deg,var(--cyan),#0a8fb5);color:#00121a;transition:.2s;
+}
+.btn-next:hover{transform:translateY(-2px)}
+.btn-next.retry{background:linear-gradient(135deg,var(--yellow),#c99a00);color:#1a1400}
+
+/* ============ INFO CARD ============ */
+.info-card{
+  margin-top:14px;padding:16px;border-radius:14px;
+  background:rgba(183,140,255,.07);border:1px solid rgba(183,140,255,.4);
+  font-size:13.5px;line-height:1.65;color:#d8c8f0;
+}
+.info-card h4{color:var(--purple);font-size:13px;letter-spacing:1px;margin-bottom:8px;text-transform:uppercase}
+.info-card ul{margin:8px 0 0 18px}
+.info-card li{margin-bottom:4px}
+.info-card b{color:var(--yellow)}
+
+/* ============ FOOTER ============ */
+.footer{display:flex;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap;
+  font-size:11px;color:#5a6e8c}
+.footer .ghost{margin-left:auto}
+
+/* ============ FINAL ============ */
+#screen-end{text-align:center;padding:20px 0}
+.end-icon{font-size:70px;display:block;margin-bottom:12px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.end-title{font-size:clamp(24px,5vw,38px);font-weight:900;margin-bottom:12px;letter-spacing:.5px}
+.end-text{max-width:600px;margin:0 auto 22px;color:#c8d8ee;line-height:1.7;font-size:14.5px}
+.end-stats{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:24px}
+.stat-box{background:var(--panel);border:1px solid var(--line);border-radius:14px;
+  padding:14px 24px;min-width:100px}
+.stat-box b{display:block;font-size:24px;color:var(--cyan)}
+.stat-box span{font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+
+/* ============ SECTION BOX ============ */
+.section-box{
+  max-width:680px;margin:0 auto 18px;background:var(--panel);
+  border:1px solid var(--line);border-radius:16px;padding:20px;text-align:left;
+}
+.section-box h3{
+  color:var(--cyan);font-size:13px;letter-spacing:1.5px;
+  margin-bottom:10px;text-transform:uppercase;display:flex;align-items:center;gap:8px;
+}
+.section-box p{font-size:13.5px;line-height:1.65;color:#c8d8ee;margin-bottom:10px}
+.section-box p:last-child{margin-bottom:0}
+.section-box textarea{
+  width:100%;min-height:80px;margin-top:8px;padding:10px 12px;border-radius:10px;
+  background:#0a1220;border:1px solid var(--line);color:var(--text);
+  font-family:inherit;font-size:13px;resize:vertical;
+}
+.section-box textarea:focus{outline:none;border-color:var(--cyan)}
+.key-questions{list-style:none;padding:0;margin:0}
+.key-questions li{
+  padding:10px 12px;background:var(--panel2);border:1px solid var(--line);
+  border-radius:10px;margin-bottom:8px;font-size:13px;line-height:1.5;
+}
+.key-questions li b{color:var(--yellow);display:block;margin-bottom:3px;font-size:12px;letter-spacing:.5px}
+.tester-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:8px}
+.tester-col{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px}
+.tester-col h5{font-size:12px;color:var(--purple);margin-bottom:6px;letter-spacing:.5px}
+.tester-col textarea{
+  width:100%;min-height:70px;padding:8px;border-radius:8px;font-size:12px;
+  background:#0a1220;border:1px solid var(--line);color:var(--text);
+  font-family:inherit;resize:vertical;
+}
+.refs{font-size:11.5px;color:#7a8fae;line-height:1.7;text-align:left}
+.refs b{color:var(--muted)}
+.refs p{margin-bottom:6px;font-size:11.5px}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ======================= INICIO ======================= -->
+  <section id="screen-start" class="screen active">
+    <div class="logo-wrap">
+      <svg class="spiro" viewBox="0 0 200 60">
+        <path d="M10 30 Q 20 4, 30 30 T 50 30 T 70 30 T 90 30 T 110 30 T 130 30 T 150 30 T 170 30 T 190 30"
+              fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+      </svg>
+      <h1 class="logo">TREPOWAR</h1>
+      <p class="tagline">Sífilis: reconoce, diagnostica y previene</p>
+      <span class="audience-badge">🎯 Dirigido a: adolescentes y jóvenes adultos</span>
+    </div>
+
+    <div class="intro-card">
+      <h3>🎣 El gancho</h3>
+      <p>
+        <i>«Me siento bien, no tengo nada…»</i> — pero una lesión indolora o la ausencia de síntomas
+        pueden retrasar la consulta. En este juego, tu equipo de laboratorio tiene
+        <b>5 niveles y 25 decisiones</b> para evitar que eso ocurra.
+      </p>
+      <h3>🕹️ Cómo se juega</h3>
+      <p>
+        <b>Cada decisión trae una ilustración didáctica</b> que debes observar antes de responder.
+        Interpretar imágenes es parte del aprendizaje: deberás decir <b>qué se ve</b>,
+        <b>qué significa</b> y <b>qué no permite concluir</b>.
+        Aciertas al primer intento = <b>+100 pts</b>. Si fallas, recibes una pista y puedes reintentar (+50 pts).
+      </p>
+      <div class="features">
+        <div class="feat"><b>5 niveles</b><span>Identidad → Prevención</span></div>
+        <div class="feat"><b>25 decisiones</b><span>Con explicación científica</span></div>
+        <div class="feat"><b>25 imágenes</b><span>Una por decisión</span></div>
+        <div class="feat"><b>Reintento</b><span>Aprendes incluso si fallas</span></div>
+      </div>
+    </div>
+
+    <div class="gallery-preview">
+      <div>🦠</div><div>🔄</div><div>📈</div><div>🔬</div><div>💉</div><div>🛡️</div>
+    </div>
+
+    <div class="ai-note">
+      <b>⚠️ Declaración de ilustraciones:</b> las 25 imágenes de este juego son
+      <b>ilustraciones SVG didácticas</b> creadas para apoyar la comprensión de conceptos.
+      <b>No son microfotografías reales</b> ni imágenes generadas por IA generativa.
+      La morfología bacteriana y los resultados de laboratorio reales requieren técnicas
+      apropiadas y muestras verificables (CDC, 2024; Papp et al., 2024).
+    </div>
+
+    <button class="btn" id="playBtn">▶ Comenzar misión</button>
+    <p class="credit" style="font-size:11px;color:#5a6e8c;margin-top:16px;line-height:1.6">
+      Proyecto «Dale play a la ciencia · Bacteriólogos en acción» · CBTIS No. 6<br>
+      Docente: María Dolores Canuto Cortés · Basado en la presentación «Treponema pallidum · Sífilis»
+    </p>
+  </section>
+
+  <!-- ======================= JUEGO ======================= -->
+  <section id="screen-game" class="screen">
+    <div class="hud">
+      <div class="hud-brand">TREPOWAR</div>
+      <div class="hud-level" id="hudLevel">Nivel 1 · Identidad y hábitat</div>
+      <div class="hud-stats">
+        <span class="stat-pill" id="pointsPill">⭐ 0 pts</span>
+      </div>
+    </div>
+
+    <div class="level-track" id="levelTrack"></div>
+    <div class="progress-info">
+      <span id="qCounter">Decisión 1 de 5</span>
+      <span id="levelName">Identidad y hábitat</span>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon" id="cardIcon">🦠</div>
+        <h2 class="q-text" id="qText">Cargando…</h2>
+      </div>
+      <div id="imgContainer"></div>
+      <div class="options" id="options"></div>
+      <div class="feedback" id="feedback"></div>
+      <div id="infoContainer"></div>
+    </div>
+
+    <div class="footer">
+      <span>🧪 25 ilustraciones SVG didácticas · No son microfotografías reales · No es IA generativa</span>
+      <button class="ghost" id="restartBtn">↻ Reiniciar</button>
+    </div>
+  </section>
+
+  <!-- ======================= FINAL ======================= -->
+  <section id="screen-end" class="screen">
+    <span class="end-icon" id="endIcon">🏆</span>
+    <h1 class="end-title" id="endTitle">¡Misión completada!</h1>
+    <p class="end-text" id="endText"></p>
+    <div class="end-stats">
+      <div class="stat-box"><b id="statPoints">0</b><span>Puntos</span></div>
+      <div class="stat-box"><b id="statDecisions">0</b><span>Decisiones</span></div>
+      <div class="stat-box"><b id="statRetries">0</b><span>Reintentos</span></div>
+    </div>
+
+    <div class="section-box">
+      <h3>✍️ Reconoce tu aportación</h3>
+      <p>Justifica <b>una decisión</b> que tomaste y que cambiarías si volvieras a jugar. ¿Qué aprendizaje te llevas para tu comunidad?</p>
+      <textarea id="reflection" placeholder="Ejemplo: En la pregunta del antibiograma aprendí que no se puede hacer a T. pallidum porque no crece en medios artificiales…"></textarea>
+    </div>
+
+    <div class="section-box">
+      <h3>⭐ Las 5 preguntas del videojuego (para el informe)</h3>
+      <p style="font-size:12px;color:var(--muted)">Estas son las 5 decisiones que debes registrar en el anexo de tu informe impreso.</p>
+      <ul class="key-questions" id="keyQuestionsList"></ul>
+    </div>
+
+    <div class="section-box">
+      <h3>🧪 Prueba con 3 personas (anónimo)</h3>
+      <p style="font-size:12.5px;color:var(--muted)">
+        Pide a 3 personas que jueguen y responde: ¿qué prevención recuerdan?, ¿qué harían en el juego?,
+        ¿qué fue confuso?, ¿pudieron abrir y usar el juego? <b>No registres nombres ni datos de salud.</b>
+      </p>
+      <div class="tester-grid">
+        <div class="tester-col"><h5>Persona 1</h5><textarea id="tester1"></textarea></div>
+        <div class="tester-col"><h5>Persona 2</h5><textarea id="tester2"></textarea></div>
+        <div class="tester-col"><h5>Persona 3</h5><textarea id="tester3"></textarea></div>
+      </div>
+    </div>
+
+    <div class="section-box">
+      <h3>📚 Créditos y referencias (APA 7)</h3>
+      <div class="refs">
+        <p>Centers for Disease Control and Prevention. (2024). <i>Syphilis—STI Treatment Guidelines.</i> https://www.cdc.gov/std/treatment-guidelines/syphilis.htm</p>
+        <p>Papp, J. R., et al. (2024). CDC laboratory recommendations for syphilis testing, United States, 2024. <i>MMWR, 73</i>(1), 1–32. https://www.cdc.gov/mmwr/volumes/73/rr/tr7301a1.htm</p>
+        <p>World Health Organization. (2025, 29 de mayo). <i>Syphilis.</i> https://www.who.int/news-room/fact-sheets/detail/syphilis</p>
+        <p>American Society for Microbiology &amp; IDSA. (2018). A guide to utilization of the microbiology laboratory for diagnosis of infectious diseases. <i>Clinical Infectious Diseases, 67</i>(6), e1–e94.</p>
+        <p>Jawetz, Melnick, &amp; Adelberg. (2023). <i>Medical Microbiology</i> (29.ª ed.). McGraw Hill.</p>
+        <p>European Committee on Antimicrobial Susceptibility Testing. (s.f.). <i>Disk diffusion and quality control.</i> https://www.eucast.org/bacteria/methodology-and-instructions/disk-diffusion-and-quality-control/</p>
+        <p style="margin-top:10px;font-size:10.5px;color:#5a6e8c;border-top:1px solid var(--line);padding-top:8px">
+          <b>Declaración de ilustraciones:</b> todas las imágenes SVG de este juego son didácticas y no representan
+          microfotografías reales. <b>Declaración de IA:</b> no se utilizó IA generativa para crear imágenes;
+          el código SVG fue escrito para este proyecto.
+        </p>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:24px">
+      <button class="btn small" id="exportBtn">⬇️ Descargar registro (.txt)</button>
+      <button class="btn small" id="againBtn">↻ Jugar de nuevo</button>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* =========================================================
+   1) NIVELES
+   ========================================================= */
+const LEVELS = [
+  {name:"Identidad y hábitat",        icon:"🦠", hud:"Nivel 1 · Identidad y hábitat"},
+  {name:"Transmisión",                icon:"🔄", hud:"Nivel 2 · Transmisión"},
+  {name:"Etapas y síntomas",          icon:"📈", hud:"Nivel 3 · Etapas y síntomas"},
+  {name:"Diagnóstico de laboratorio", icon:"🔬", hud:"Nivel 4 · Diagnóstico de laboratorio"},
+  {name:"Tratamiento y prevención",   icon:"💉", hud:"Nivel 5 · Tratamiento y prevención"}
+];
+
+/* =========================================================
+   2) BIBLIOTECA DE ILUSTRACIONES DIDÁCTICAS (SVG)
+   Cada SVG incluye etiquetas y colores con intención didáctica
+   ========================================================= */
+const SVG = {
+
+  /* ---- N1: forma helicoidal ---- */
+  spirochete: `
+  <svg viewBox="0 0 420 140" role="img" aria-label="Forma helicoidal de T. pallidum">
+    <defs>
+      <linearGradient id="gSp" x1="0" x2="1">
+        <stop offset="0" stop-color="#ff2f8e"/>
+        <stop offset="1" stop-color="#ff7fb8"/>
+      </linearGradient>
+    </defs>
+    <rect width="420" height="140" fill="#0a1220" rx="12"/>
+    <!-- regla -->
+    <line x1="40" y1="115" x2="380" y2="115" stroke="#22304d" stroke-width="1"/>
+    <text x="40" y="130" font-size="9" fill="#8aa0c0" font-family="monospace">0 μm</text>
+    <text x="360" y="130" font-size="9" fill="#8aa0c0" font-family="monospace">≈ 20 μm</text>
+    <!-- espiroqueta -->
+    <path d="M40 60 Q 52 24, 64 60 T 88 60 T 112 60 T 136 60 T 160 60 T 184 60 T 208 60 T 232 60 T 256 60 T 280 60 T 304 60 T 328 60 T 352 60 T 376 60"
+          fill="none" stroke="url(#gSp)" stroke-width="6" stroke-linecap="round"
+          stroke-dasharray="14 8">
+      <animate attributeName="stroke-dashoffset" from="0" to="-88" dur="3s" repeatCount="indefinite"/>
+    </path>
+    <!-- punta afilada -->
+    <polygon points="376,60 392,52 392,68" fill="#ff7fb8"/>
+    <!-- etiquetas -->
+    <text x="210" y="30" text-anchor="middle" font-size="11" fill="#ffb3d4" font-family="monospace">helicoidal · delgada · flexible</text>
+    <text x="210" y="105" text-anchor="middle" font-size="9" fill="#8aa0c0" font-family="monospace">movimiento tipo sacacorchos</text>
+  </svg>`,
+
+  /* ---- N1: reservorio humano ---- */
+  reservoir: `
+  <svg viewBox="0 0 420 200" role="img" aria-label="Reservorio humano de T. pallidum">
+    <rect width="420" height="200" fill="#0a1220" rx="12"/>
+    <!-- personas -->
+    <g>
+      <circle cx="90" cy="55" r="18" fill="#3ddc84"/>
+      <path d="M62 110 Q90 75 118 110 Z" fill="#3ddc84"/>
+      <text x="90" y="145" text-anchor="middle" font-size="10" fill="#3ddc84" font-family="monospace">Persona</text>
+      <text x="90" y="158" text-anchor="middle" font-size="10" fill="#3ddc84" font-family="monospace">infectada</text>
+    </g>
+    <!-- flechas hacia órganos -->
+    <g stroke="#ff2f8e" stroke-width="2" fill="none">
+      <path d="M130 55 Q 180 30 230 55" marker-end="url(#aRes)"/>
+      <path d="M130 85 Q 180 110 230 85" marker-end="url(#aRes)"/>
+    </g>
+    <defs>
+      <marker id="aRes" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+        <path d="M0 0 L6 3 L0 6 Z" fill="#ff2f8e"/>
+      </marker>
+    </defs>
+    <!-- órganos diana -->
+    <circle cx="280" cy="55" r="20" fill="#b78cff"/>
+    <text x="280" y="60" text-anchor="middle" font-size="9" fill="#1a0a2a" font-weight="bold" font-family="monospace">SNC</text>
+    <circle cx="340" cy="55" r="20" fill="#22e0ff"/>
+    <text x="340" y="60" text-anchor="middle" font-size="9" fill="#00121a" font-weight="bold" font-family="monospace">piel</text>
+    <circle cx="280" cy="105" r="20" fill="#ffd23f"/>
+    <text x="280" y="110" text-anchor="middle" font-size="9" fill="#1a1400" font-weight="bold" font-family="monospace">ojos</text>
+    <circle cx="340" cy="105" r="20" fill="#ff7fb8"/>
+    <text x="340" y="110" text-anchor="middle" font-size="9" fill="#2a0010" font-weight="bold" font-family="monospace">vasos</text>
+    <text x="210" y="185" text-anchor="middle" font-size="10" fill="#8aa0c0" font-family="monospace">Reservorio ≠ sitio de lesión · la infección puede ser sistémica</text>
+  </svg>`,
+
+  /* ---- N1: Gram no confiable ---- */
+  gramFail: `
+  <svg viewBox="0 0 420 170" role="img" aria-label="Tinción de Gram no confiable">
+    <rect width="420" height="170" fill="#0a1220" rx="12"/>
+    <!-- microscopio -->
+    <g transform="translate(60,20)">
+      <rect x="0" y="90" width="90" height="12" rx="3" fill="#2d4569"/>
+      <rect x="30" y="30" width="14" height="65" fill="#2d4569"/>
+      <rect x="14" y="20" width="60" height="12" rx="6" fill="#2d4569"/>
+      <circle cx="80" cy="26" r="10" fill="#3a5a80"/>
+      <rect x="55" y="18" width="30" height="6" fill="#22e0ff"/>
+    </g>
+    <!-- portaobjetos vacío -->
+    <rect x="170" y="90" width="200" height="26" rx="3" fill="#1a2540" stroke="#22304d"/>
+    <text x="270" y="108" text-anchor="middle" font-size="11" fill="#ff4d5e" font-family="monospace" font-weight="bold">✗ No se observa</text>
+    <!-- etiqueta -->
+    <text x="270" y="140" text-anchor="middle" font-size="10" fill="#8aa0c0" font-family="monospace">Gram no es fiable para T. pallidum</text>
+    <text x="270" y="155" text-anchor="middle" font-size="10" fill="#8aa0c0" font-family="monospace">(demasiado delgada)</text>
+    <text x="120" y="55" font-size="10" fill="#ffd23f" font-family="monospace">Gram</text>
+  </svg>`,
+
+  /* ---- N1: diseminación sistémica ---- */
+  systemic: `
+  <svg viewBox="0 0 420 200" role="img" aria-label="Diseminación sistémica">
+    <rect width="420" height="200" fill="#0a1220" rx="12"/>
+    <!-- cuerpo -->
+    <g transform="translate(160,10)">
+      <circle cx="50" cy="30" r="18" fill="#2d4569"/>
+      <path d="M30 50 Q50 40 70 50 L72 130 Q50 138 28 130 Z" fill="#2d4569"/>
+      <rect x="18" y="50" width="10" height="60" rx="5" fill="#2d4569"/>
+      <rect x="72" y="50" width="10" height="60" rx="5" fill="#2d4569"/>
+      <rect x="36" y="130" width="12" height="50" rx="6" fill="#2d4569"/>
+      <rect x="52" y="130" width="12" height="50" rx="6" fill="#2d4569"/>
+      <!-- órganos resaltados -->
+      <circle cx="50" cy="27" r="8" fill="#b78cff">
+        <animate attributeName="opacity" values="1;.4;1" dur="1.5s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="50" cy="80" r="7" fill="#ff4d5e">
+        <animate attributeName="opacity" values="1;.4;1" dur="1.5s" repeatCount="indefinite"/>
+      </circle>
+      <rect x="44" y="100" width="12" height="6" rx="3" fill="#ffd23f"/>
+    </g>
+    <!-- bacterias viajando -->
+    <g fill="#ff2f8e">
+      <circle cx="260" cy="60" r="4"><animate attributeName="cx" from="220" to="320" dur="3s" repeatCount="indefinite"/></circle>
+      <circle cx="260" cy="100" r="4"><animate attributeName="cx" from="220" to="320" dur="3s" begin="1s" repeatCount="indefinite"/></circle>
+      <circle cx="260" cy="140" r="4"><animate attributeName="cx" from="220" to="320" dur="3s" begin="2s" repeatCount="indefinite"/></circle>
+    </g>
+    <text x="330" y="40" font-size="10" fill="#ffb3d4" font-family="monospace">por sangre</text>
+    <text x="330" y="180" font-size="10" fill="#8aa0c0" font-family="monospace">SNC · piel · ojos · vasos</text>
+  </svg>`,
+
+  /* ---- N2: transmisión sexual + vertical ---- */
+  transmission: `
+  <svg viewBox="0 0 420 160" role="img" aria-label="Vías de transmisión">
+    <rect width="420" height="160" fill="#0a1220" rx="12"/>
+    <defs>
+      <marker id="aTx" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+        <path d="M0 0 L6 3 L0 6 Z" fill="#ff2f8e"/>
+      </marker>
+      <marker id="aTx2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+        <path d="M0 0 L6 3 L0 6 Z" fill="#b78cff"/>
+      </marker>
+    </defs>
+    <!-- Persona A -->
+    <circle cx="70" cy="55" r="18" fill="#3ddc84"/>
+    <path d="M44 110 Q70 78 96 110 Z" fill="#3ddc84"/>
+    <text x="70" y="140" text-anchor="middle" font-size="10" fill="#3ddc84" font-family="monospace">Persona A</text>
+    <!-- Persona B -->
+    <circle cx="210" cy="55" r="18" fill="#22e0ff"/>
+    <path d="M184 110 Q210 78 236 110 Z" fill="#22e0ff"/>
+    <text x="210" y="140" text-anchor="middle" font-size="10" fill="#22e0ff" font-family="monospace">Persona B</text>
+    <!-- flecha sexual -->
+    <line x1="100" y1="80" x2="180" y2="80" stroke="#ff2f8e" stroke-width="3" marker-end="url(#aTx)"/>
+    <text x="140" y="72" text-anchor="middle" font-size="9" fill="#ffb3d4" font-family="monospace">sexo vaginal, anal u oral</text>
+    <!-- Embarazo -->
+    <circle cx="340" cy="55" r="18" fill="#b78cff"/>
+    <path d="M314 110 Q340 78 366 110 Z" fill="#b78cff"/>
+    <circle cx="360" cy="60" r="8" fill="#ffd23f"/>
+    <text x="340" y="140" text-anchor="middle" font-size="10" fill="#d8c4ff" font-family="monospace">Embarazo</text>
+    <line x1="245" y1="80" x2="315" y2="80" stroke="#b78cff" stroke-width="3" marker-end="url(#aTx2)" stroke-dasharray="6 4"/>
+    <text x="280" y="72" text-anchor="middle" font-size="9" fill="#d8c4ff" font-family="monospace">vertical</text>
+    <text x="210" y="152" text-anchor="middle" font-size="10" fill="#8aa0c0" font-family="monospace">Contacto con lesiones infecciosas · placenta</text>
+  </svg>`,
+
+  /* ---- N2: mitos ---- */
+  myths: `
+  <svg viewBox="0 0 420 180" role="img" aria-label="Mitos de transmisión">
+    <rect width="420" height="180" fill="#0a1220" rx="12"/>
+    <g font-family="monospace" text-anchor="middle">
+      <!-- abrazo -->
+      <g transform="translate(70,60)">
+        <circle r="22" fill="none" stroke="#3ddc84" stroke-width="2"/>
+        <text y="7" font-size="20" fill="#3ddc84">🤝</text>
+        <text y="40" font-size="10" fill="#8aa0c0">abrazar</text>
+        <line x1="-30" y1="-30" x2="30" y2="30" stroke="#ff4d5e" stroke-width="3"/>
+      </g>
+      <!-- cubiertos -->
+      <g transform="translate(160,60)">
+        <circle r="22" fill="none" stroke="#3ddc84" stroke-width="2"/>
+        <text y="7" font-size="20" fill="#3ddc84">🍴</text>
+        <text y="40" font-size="10" fill="#8aa0c0">cubiertos</text>
+        <line x1="-30" y1="-30" x2="30" y2="30" stroke="#ff4d5e" stroke-width="3"/>
+      </g>
+      <!-- baño -->
+      <g transform="translate(250,60)">
+        <circle r="22" fill="none" stroke="#3ddc84" stroke-width="2"/>
+        <text y="7" font-size="20" fill="#3ddc84">🚽</text>
+        <text y="40" font-size="10" fill="#8aa0c0">baño</text>
+        <line x1="-30" y1="-30" x2="30" y2="30" stroke="#ff4d5e" stroke-width="3"/>
+      </g>
+      <!-- saliva -->
+      <g transform="translate(340,60)">
+        <circle r="22" fill="none" stroke="#3ddc84" stroke-width="2"/>
+        <text y="7" font-size="20" fill="#3ddc84">💧</text>
+        <text y="40" font-size="10" fill="#8aa0c0">saliva</text>
+        <line x1="-30" y1="-30" x2="30" y2="30" stroke="#ff4d5e" stroke-width="3"/>
+      </g>
+    </g>
+    <text x="210" y="160" text-anchor="middle" font-size="11" fill="#ffb3d4" font-family="monospace" font-weight="bold">✗ NO se transmiten la sífilis por estas vías</text>
+  </svg>`,
+
+  /* ---- N2: transmisión vertical ---- */
+  vertical: `
+  <svg viewBox="0 0 420 200" role="img" aria-label="Transmisión vertical">
+    <rect width="420" height="200" fill="#0a1220" rx="12"/>
+    <!-- madre -->
+    <g transform="translate(100,30)">
+      <circle cx="0" cy="0" r="22" fill="#b78cff"/>
+      <path d="M-30 45 Q0 10 30 45 L30 110 Q0 120 -30 110 Z" fill="#b78cff"/>
+      <!-- vientre -->
+      <ellipse cx="10" cy="70" rx="22" ry="26" fill="#d8c4ff" opacity=".7"/>
+      <!-- feto -->
+      <circle cx="14" cy="70" r="12" fill="#ffd23f"/>
+      <text x="14" y="74" text-anchor="middle" font-size="8" fill="#1a1400" font-weight="bold" font-family="monospace">feto</text>
+      <text x="0" y="140" text-anchor="middle" font-size="10" fill="#d8c4ff" font-family="monospace">Persona embarazada</text>
+    </g>
+    <!-- placenta -->
+    <g transform="translate(230,60)">
+      <ellipse cx="0" cy="0" rx="30" ry="42" fill="#ff7fb8" opacity=".7"/>
+      <text x="0" y="5" text-anchor="middle" font-size="10" fill="#2a0010" font-family="monospace" font-weight="bold">placenta</text>
+      <path d="M0 -42 L0 -60" stroke="#ff2f8e" stroke-width="2" stroke-dasharray="3 3"/>
+      <text x="0" y="-66" text-anchor="middle" font-size="9" fill="#ffb3d4" font-family="monospace">T. pallidum</text>
+    </g>
+    <!-- flecha de transmisión -->
+    <path d="M130 100 Q 200 60 230 60" fill="none" stroke="#ff2f8e" stroke-width="3" stroke-dasharray="6 4">
+      <animate attributeName="stroke-dashoffset" from="0" to="-20" dur="1s" repeatCount="indefinite"/>
+    </path>
+    <text x="180" y="180" text-anchor="middle" font-size="11" fill="#ffb3d4" font-family="monospace">Sífilis congénita · atraviesa la placenta</text>
+  </svg>`,
+
+  /* ---- N2: condón ---- */
+  condom: `
+  <svg viewBox="0 0 420 160" role="img" aria-label="El condón reduce pero no elimina el riesgo">
+    <rect width="420" height="160" fill="#0a1220" rx="12"/>
+    <!-- escudo -->
+    <path d="M130 30 L130 80 Q130 130 180 145 Q230 130 230 80 L230 30 Z" fill="#3ddc84" opacity=".85"/>
+    <text x="180" y="80" text-anchor="middle" font-size="26" font-weight="bold" fill="#04120a" font-family="monospace">✓</text>
+    <text x="180" y="100" text-anchor="middle" font-size="11" font-weight="bold" fill="#04120a" font-family="monospace">Reduce</text>
+    <!-- zonas no cubiertas -->
+    <circle cx="320" cy="60" r="16" fill="#ffd23f" opacity=".85"/>
+    <text x="320" y="65" text-anchor="middle" font-size="9" font-weight="bold" fill="#1a1400" font-family="monospace">piel</text>
+    <circle cx="350" cy="100" r="16" fill="#ff7fb8" opacity=".85"/>
+    <text x="350" y="105" text-anchor="middle" font-size="9" font-weight="bold" fill="#2a0010" font-family="monospace">mucosa</text>
+    <circle cx="310" cy="120" r="16" fill="#b78cff" opacity=".85"/>
+    <text x="310" y="125" text-anchor="middle" font-size="9" font-weight="bold" fill="#1a0a2a" font-family="monospace">oral</text>
+    <text x="320" y="155" text-anchor="middle" font-size="10" fill="#ffb3d4" font-family="monospace">✗ no cubre todas las zonas</text>
+    <text x="210" y="145" text-anchor="middle" font-size="10" fill="#8aa0c0" font-family="monospace">El condón reduce, no elimina todo el riesgo</text>
+  </svg>`,
+
+  /* ---- N2: etapas tempranas ---- */
+  earlyTx: `
+  <svg viewBox="0 0 420 140" role="img" aria-label="Transmisión más frecuente en etapas tempranas">
+    <rect width="420" height="140" fill="#0a1220" rx="12"/>
+    <!-- línea de tiempo -->
+    <line x1="30" y1="80" x2="390" y2="80" stroke="#22304d" stroke-width="2"/>
+    <!-- puntos -->
+    <g font-family="monospace" text-anchor="middle">
+      <circle cx="70" cy="80" r="10" fill="#ff2f8e"/>
+      <text x="70" y="115" font-size="9" fill="#ff2f8e">Primaria</text>
+      <text x="70" y="60" font-size="9" fill="#ffb3d4">↑ alto</text>
+      <circle cx="170" cy="80" r="10" fill="#ff2f8e"/>
+      <text x="170" y="115" font-size="9" fill="#ff2f8e">Secundaria</text>
+      <text x="170" y="60" font-size="9" fill="#ffb3d4">↑ alto</text>
+      <circle cx="270" cy="80" r="10" fill="#ffd23f"/>
+      <text x="270" y="115" font-size="9" fill="#ffd23f">Latente</text>
+      <text x="270" y="60" font-size="9" fill="#d8c8a0">↓ bajo</text>
+      <circle cx="360" cy="80" r="10" fill="#8aa0c0"/>
+      <text x="360" y="115" font-size="9" fill="#8aa0c0">Terciaria</text>
+      <text x="360" y="60" font-size="9" fill="#8aa0c0">↓ bajo</text>
+    </g>
+    <text x="210" y="25" text-anchor="middle" font-size="10" fill="#8aa0c0" font-family="monospace">Transmisión sexual más frecuente en etapas tempranas</text>
+  </svg>`,
+
+  /* ---- N3: 4 etapas ---- */
+  stages: `
+  <svg viewBox="0 0 420 200" role="img" aria-label="Las cuatro etapas de la sífilis">
+    <rect width="420" height="200" fill="#0a1220" rx="12"/>
+    <g font-family="monospace" text-anchor="middle">
+      <!-- Primaria -->
+      <g transform="translate(70,50)">
+        <circle r="26" fill="#ff2f8e"/>
+        <text y="5" font-size="12" font-weight="bold" fill="#fff">1</text>
+        <text y="48" font-size="10" fill="#ffb3d4">Primaria</text>
+        <text y="62" font-size="9" fill="#8aa0c0">chancro</text>
+      </g>
+      <!-- Secundaria -->
+      <g transform="translate(160,50)">
+        <circle r="26" fill="#ffd23f"/>
+        <text y="5" font-size="12" font-weight="bold" fill="#1a1400">2</text>
+        <text y="48" font-size="10" fill="#ffd23f">Secundaria</text>
+        <text y="62" font-size="9" fill="#8aa0c0">erupción</text>
+      </g>
+      <!-- Latente -->
+      <g transform="translate(250,50)">
+        <circle r="26" fill="#b78cff"/>
+        <text y="5" font-size="12" font-weight="bold" fill="#1a0a2a">3</text>
+        <text y="48" font-size="10" fill="#d8c4ff">Latente</text>
+        <text y="62" font-size="9" fill="#8aa0c0">sin síntomas</text>
+      </g>
+      <!-- Terciaria -->
+      <g transform="translate(340,50)">
+        <circle r="26" fill="#ff4d5e"/>
+        <text y="5" font-size="12" font-weight="bold" fill="#fff">4</text>
+        <text y="48" font-size="10" fill="#ff4d5e">Terciaria</text>
+        <text y="62" font-size="9" fill="#8aa0c0">órganos</text>
+      </g>
+    </g>
+    <line x1="60" y1="150" x2="360" y2="150" stroke="#22304d" stroke-width="1"/>
+    <text x="70" y="170" text-anchor="middle" font-size="9" fill="#8aa0c0">semanas</text>
+    <text x="340" y="170" text-anchor="middle" font-size="9" fill="#8aa0c0">años</text>
+    <text x="210" y="190" text-anchor="middle" font-size="10" fill="#8aa0c0">Neurosífilis, ocular y ótica pueden aparecer en cualquier etapa</text>
+  </svg>`,
+
+  /* ---- N3: chancro ---- */
+  chancro: `
+  <svg viewBox="0 0 320 240" role="img" aria-label="Chancro en el sitio de entrada">
+    <rect width="320" height="240" fill="#0a1220" rx="12"/>
+    <!-- cuerpo -->
+    <g transform="translate(160,10)">
+      <circle cx="0" cy="25" r="20" fill="#2d4569"/>
+      <path d="M-26 48 Q0 38 26 48 L28 138 Q0 148 -28 138 Z" fill="#2d4569"/>
+      <rect x="-34" y="48" width="10" height="60" rx="5" fill="#2d4569"/>
+      <rect x="24" y="48" width="10" height="60" rx="5" fill="#2d4569"/>
+      <rect x="-14" y="138" width="12" height="60" rx="6" fill="#2d4569"/>
+      <rect x="2" y="138" width="12" height="60" rx="6" fill="#2d4569"/>
+      <!-- chancro -->
+      <circle cx="0" cy="128" r="10" fill="#ff2f8e">
+        <animate attributeName="r" values="10;13;10" dur="1.6s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="0" cy="128" r="16" fill="none" stroke="#ff2f8e" stroke-width="1.5" stroke-dasharray="3 3"/>
+    </g>
+    <!-- etiqueta -->
+    <line x1="200" y1="145" x2="270" y2="145" stroke="#ff7fb8" stroke-width="1"/>
+    <text x="276" y="140" font-size="10" fill="#ffb3d4" font-family="monospace">Chancro</text>
+    <text x="276" y="154" font-size="9" fill="#8aa0c0" font-family="monospace">indoloro</text>
+    <text x="160" y="225" text-anchor="middle" font-size="10" fill="#8aa0c0" font-family="monospace">Sitio de entrada · etapa primaria</text>
+  </svg>`,
+
+  /* ---- N3: secundaria ---- */
+  secondary: `
+  <svg viewBox="0 0 420 220" role="img" aria-label="Sífilis secundaria: erupción en palmas y plantas">
+    <rect width="420" height="220" fill="#0a1220" rx="12"/>
+    <!-- torso con erupción -->
+    <g transform="translate(110,20)">
+      <circle cx="0" cy="25" r="20" fill="#2d4569"/>
+      <path d="M-30 48 Q0 38 30 48 L32 140 Q0 150 -32 140 Z" fill="#2d4569"/>
+      <!-- erupción -->
+      <g fill="#ff7fb8">
+        <circle cx="-15" cy="70" r="3"><animate attributeName="opacity" values="1;.4;1" dur="2s" repeatCount="indefinite"/></circle>
+        <circle cx="10" cy="75" r="3"><animate attributeName="opacity" values="1;.4;1" dur="2s" begin=".3s" repeatCount="indefinite"/></circle>
+        <circle cx="-5" cy="95" r="3"><animate attributeName="opacity" values="1;.4;1" dur="2s" begin=".6s" repeatCount="indefinite"/></circle>
+        <circle cx="18" cy="105" r="3"><animate attributeName="opacity" values="1;.4;1" dur="2s" begin=".9s" repeatCount="indefinite"/></circle>
+        <circle cx="-20" cy="115" r="3"><animate attributeName="opacity" values="1;.4;1" dur="2s" begin="1.2s" repeatCount="indefinite"/></circle>
+        <circle cx="5" cy="130" r="3"><animate attributeName="opacity" values="1;.4;1" dur="2s" begin="1.5s" repeatCount="indefinite"/></circle>
+      </g>
+      <text x="0" y="190" text-anchor="middle" font-size="10" fill="#8aa0c0" font-family="monospace">torso y mucosas</text>
+    </g>
+    <!-- palma -->
+    <g transform="translate(260,60)">
+      <rect x="-30" y="-40" width="60" height="80" rx="14" fill="#ffd8a8"/>
+      <g fill="#ff7fb8">
+        <circle cx="-10" cy="-20" r="4"/>
+        <circle cx="8" cy="-10" r="4"/>
+        <circle cx="-5" cy="0" r="4"/>
+        <circle cx="12" cy="12" r="4"/>
+        <circle cx="-12" cy="18" r="4"/>
+      </g>
+      <text x="0" y="65" text-anchor="middle" font-size="10" fill="#ffd23f" font-family="monospace">palmas</text>
+    </g>
+    <!-- planta -->
+    <g transform="translate(350,60)">
+      <rect x="-25" y="-40" width="50" height="80" rx="14" fill="#ffd8a8"/>
+      <g fill="#ff7fb8">
+        <circle cx="-8" cy="-15" r="4"/>
+        <circle cx="8" cy="-5" r="4"/>
+        <circle cx="0" cy="10" r="4"/>
+        <circle cx="-10" cy="20" r="4"/>
+      </g>
+      <text x="0" y="65" text-anchor="middle" font-size="10" fill="#ffd23f" font-family="monospace">plantas</text>
+    </g>
+    <text x="210" y="210" text-anchor="middle" font-size="10" fill="#8aa0c0" font-family="monospace">Erupción en palmas y plantas = muy sugestiva</text>
+  </svg>`,
+
+  /* ---- N3: latente ---- */
+  latent: `
+  <svg viewBox="0 0 420 170" role="img" aria-label="Etapa latente: sin síntomas visibles pero pruebas positivas">
+    <rect width="420" height="170" fill="#0a1220" rx="12"/>
+    <!-- persona tranquila -->
+    <circle cx="100" cy="55" r="22" fill="#3ddc84"/>
+    <path d="M70 110 Q100 78 130 110 Z" fill="#3ddc84"/>
+    <text x="100" y="60" text-anchor="middle" font-size="20">😊</text>
+    <text x="100" y="140" text-anchor="middle" font-size="10" fill="#3ddc84" font-family="monospace">Sin síntomas visibles</text>
+    <!-- tubo de sangre positivo -->
+    <g transform="translate(260,50)">
+      <rect x="-14" y="-35" width="28" height="70" rx="14" fill="#1a2540" stroke="#22304d"/>
+      <rect x="-12" y="0" width="24" height="33" rx="12" fill="#ff4d5e"/>
+      <text x="0" y="55" text-anchor="middle" font-size="10" fill="#ff4d5e" font-family="monospace">Serología POSITIVA</text>
+    </g>
+    <text x="210" y="160" text-anchor="middle" font-size="10" fill="#8aa0c0" font-family="monospace">Sin síntomas ≠ sin infección · el tamizaje es clave</text>
+  </svg>`,
+
+  /* ---- N3: neurosífilis / ocular / ótica ---- */
+  neuroOcularOtic: `
+  <svg viewBox="0 0 420 170" role="img" aria-label="Neurosífilis, sífilis ocular y ótica">
+    <rect width="420" height="170" fill="#0a1220" rx="12"/>
+    <g font-family="monospace" text-anchor="middle">
+      <!-- cerebro -->
+      <g transform="translate(90,80)">
+        <circle r="32" fill="#b78cff" opacity=".9"/>
+        <text y="6" font-size="20">🧠</text>
+        <text y="55" font-size="10" fill="#d8c4ff">Neurosífilis</text>
+        <text y="68" font-size="9" fill="#8aa0c0">SNC</text>
+      </g>
+      <!-- ojo -->
+      <g transform="translate(210,80)">
+        <circle r="32" fill="#22e0ff" opacity=".9"/>
+        <text y="6" font-size="20">👁️</text>
+        <text y="55" font-size="10" fill="#a8f0ff">Ocular</text>
+        <text y="68" font-size="9" fill="#8aa0c0">uveítis</text>
+      </g>
+      <!-- oído -->
+      <g transform="translate(330,80)">
+        <circle r="32" fill="#ffd23f" opacity=".9"/>
+        <text y="6" font-size="20">👂</text>
+        <text y="55" font-size="10" fill="#ffd23f">Ótica</text>
+        <text y="68" font-size="9" fill="#8aa0c0">audición</text>
+      </g>
+    </g>
+    <text x="210" y="160" text-anchor="middle" font-size="10" fill="#8aa0c0" font-family="monospace">Pueden aparecer en cualquier etapa</text>
+  </svg>`,
+
+  /* ---- N3: terciaria ---- */
+  tertiary: `
+  <svg viewBox="0 0 420 200" role="img" aria-label="Sífilis terciaria: daño a órganos">
+    <rect width="420" height="200" fill="#0a1220" rx="12"/>
+    <g font-family="monospace" text-anchor="middle">
+      <!-- corazón -->
+      <g transform="translate(90,80)">
+        <circle r="38" fill="#ff4d5e" opacity=".85"/>
+        <text y="8" font-size="26">❤️</text>
+        <text y="65" font-size="10" fill="#ffb3b8">Corazón</text>
+        <text y="78" font-size="9" fill="#8aa0c0">aortitis</text>
+      </g>
+      <!-- cerebro -->
+      <g transform="translate(210,80)">
+        <circle r="38" fill="#b78cff" opacity=".85"/>
+        <text y="8" font-size="26">🧠</text>
+        <text y="65" font-size="10" fill="#d8c4ff">Cerebro</text>
+        <text y="78" font-size="9" fill="#8aa0c0">neurosífilis</text>
+      </g>
+      <!-- vasos -->
+      <g transform="translate(330,80)">
+        <circle r="38" fill="#ff7fb8" opacity=".85"/>
+        <text y="8" font-size="26">🩸</text>
+        <text y="65" font-size="10" fill="#ffb3d4">Vasos</text>
+        <text y="78" font-size="9" fill="#8aa0c0">aneurisma</text>
+      </g>
+    </g>
+    <text x="210" y="180" text-anchor="middle" font-size="10" fill="#8aa0c0" font-family="monospace">Años después en personas no tratadas · puede afectar varios órganos</text>
+  </svg>`,
+
+  /* ---- N4: serología ---- */
+  serology: `
+  <svg viewBox="0 0 420 200" role="img" aria-label="Pruebas serológicas: no treponémicas y treponémicas">
+    <rect width="420" height="200" fill="#0a1220" rx="12"/>
+    <!-- Título -->
+    <text x="210" y="25" text-anchor="middle" font-size="11" fill="#ffd23f" font-family="monospace" font-weight="bold">SANGRE (suero/plasma)</text>
+    <line x1="60" y1="35" x2="360" y2="35" stroke="#22304d"/>
+    <!-- No treponémicas -->
+    <g transform="translate(110,110)">
+      <rect x="-35" y="-55" width="70" height="90" rx="12" fill="#1a2540" stroke="#ffd23f" stroke-width="2"/>
+      <text y="-20" text-anchor="middle" font-size="11" fill="#ffd23f" font-family="monospace" font-weight="bold">RPR</text>
+      <text y="-5" text-anchor="middle" font-size="11" fill="#ffd23f" font-family="monospace" font-weight="bold">VDRL</text>
+      <text y="20" text-anchor="middle" font-size="9" fill="#8aa0c0" font-family="monospace">reagínicas</text>
+      <text y="55" text-anchor="middle" font-size="10" fill="#ffd23f" font-family="monospace">No treponémicas</text>
+      <text y="70" text-anchor="middle" font-size="9" fill="#8aa0c0" font-family="monospace">con título · seguimiento</text>
+    </g>
+    <!-- Treponémicas -->
+    <g transform="translate(290,110)">
+      <rect x="-40" y="-55" width="80" height="90" rx="12" fill="#1a2540" stroke="#22e0ff" stroke-width="2"/>
+      <text y="-20" text-anchor="middle" font-size="11" fill="#22e0ff" font-family="monospace" font-weight="bold">TP-PA</text>
+      <text y="-5" text-anchor="middle" font-size="11" fill="#22e0ff" font-family="monospace" font-weight="bold">EIA/CIA</text>
+      <text y="20" text-anchor="middle" font-size="9" fill="#8aa0c0" font-family="monospace">específicas</text>
+      <text y="55" text-anchor="middle" font-size="10" fill="#22e0ff" font-family="monospace">Treponémicas</text>
+      <text y="70" text-anchor="middle" font-size="9" fill="#8aa0c0" font-family="monospace">confirman</text>
+    </g>
+    <!-- flecha + complemento -->
+    <text x="210" y="180" text-anchor="middle" font-size="10" fill="#8aa0c0" font-family="monospace">Ambas familias se complementan con historia y examen clínico</text>
+  </svg>`,
+
+  /* ---- N4: no treponémicas ---- */
+  nontrep: `
+  <svg viewBox="0 0 420 180" role="img" aria-label="Pruebas no treponémicas">
+    <rect width="420" height="180" fill="#0a1220" rx="12"/>
+    <!-- tubo con título -->
+    <g transform="translate(110,60)">
+      <rect x="-18" y="-40" width="36" height="100" rx="18" fill="#1a2540" stroke="#ffd23f" stroke-width="2"/>
+      <rect x="-15" y="10" width="30" height="45" rx="15" fill="#ffd23f" opacity=".7"/>
+      <text x="0" y="-50" text-anchor="middle" font-size="10" fill="#ffd23f" font-family="monospace">RPR</text>
+      <text x="0" y="80" text-anchor="middle" font-size="11" fill="#e6f1ff" font-family="monospace" font-weight="bold">1:16</text>
+    </g>
+    <!-- otro tubo -->
+    <g transform="translate(210,60)">
+      <rect x="-18" y="-40" width="36" height="100" rx="18" fill="#1a2540" stroke="#ffd23f" stroke-width="2"/>
+      <rect x="-15" y="10" width="30" height="45" rx="15" fill="#ffd23f" opacity=".7"/>
+      <text x="0" y="-50" text-anchor="middle" font-size="10" fill="#ffd23f" font-family="monospace">VDRL</text>
+      <text x="0" y="80" text-anchor="middle" font-size="11" fill="#e6f1ff" font-family="monospace" font-weight="bold">1:4</text>
+    </g>
+    <!-- etiqueta -->
+    <g transform="translate(320,80)" font-family="monospace" text-anchor="middle">
+      <text y="-15" font-size="11" fill="#ffd23f" font-weight="bold">NO treponémicas</text>
+      <text y="5" font-size="10" fill="#8aa0c0">detectan anticuerpos</text>
+      <text y="20" font-size="10" fill="#8aa0c0">reagínicos</text>
+      <text y="40" font-size="10" fill="#ffb3d4">se reportan con título</text>
+      <text y="55" font-size="10" fill="#ffb3d4">ayudan al seguimiento</text>
+    </g>
+    <text x="210" y="170" text-anchor="middle" font-size="10" fill="#8aa0c0" font-family="monospace">Título ascendente o descendente orienta el seguimiento</text>
+  </svg>`,
+
+  /* ---- N4: no hay cultivo ---- */
+  noCulture: `
+  <svg viewBox="0 0 420 180" role="img" aria-label="No hay cultivo rutinario">
+    <rect width="420" height="180" fill="#0a1220" rx="12"/>
+    <!-- caja petri tachada -->
+    <g transform="translate(120,90)">
+      <circle r="55" fill="#1a2a40" stroke="#ff4d5e" stroke-width="3"/>
+      <circle r="30" fill="#0a1220"/>
+      <line x1="-40" y1="-40" x2="40" y2="40" stroke="#ff4d5e" stroke-width="4"/>
+      <text y="5" text-anchor="middle" font-size="22" fill="#ff4d5e">✗</text>
+    </g>
+    <!-- razones -->
+    <g transform="translate(280,60)" font-family="monospace" text-anchor="middle">
+      <text y="0" font-size="12" fill="#ff4d5e" font-weight="bold">No hay cultivo rutinario</text>
+      <text y="25" font-size="10" fill="#8aa0c0">T. pallidum no crece en</text>
+      <text y="40" font-size="10" fill="#8aa0c0">medios artificiales</text>
+      <text y="60" font-size="10" fill="#ffd23f">→ no colonias</text>
+      <text y="75" font-size="10" fill="#ffd23f">→ no hemólisis</text>
+      <text y="90" font-size="10" fill="#ffd23f">→ no agar</text>
+    </g>
+    <text x="210" y="170" text-anchor="middle" font-size="10" fill="#8aa0c0" font-family="monospace">Alternativas: serología · campo oscuro · PCR validada</text>
+  </svg>`,
+
+  /* ---- N4: antibiograma halo ---- */
+  halo: `
+  <svg viewBox="0 0 420 220" role="img" aria-label="Halo de inhibición en prueba de difusión en disco">
+    <rect width="420" height="220" fill="#0a1220" rx="12"/>
+    <!-- Caja Petri -->
+    <circle cx="210" cy="105" r="90" fill="#1a2a40" stroke="#3a5a80" stroke-width="4"/>
+    <circle cx="210" cy="105" r="82" fill="#2a3a50" opacity=".6"/>
+    <!-- Halo -->
+    <circle cx="210" cy="105" r="50" fill="#0a1220" stroke="#3ddc84" stroke-width="2" stroke-dasharray="5 5"/>
+    <text x="210" y="65" text-anchor="middle" font-size="10" fill="#3ddc84" font-family="monospace" font-weight="bold">Halo de inhibición</text>
+    <!-- disco -->
+    <circle cx="210" cy="105" r="14" fill="#fff" stroke="#222" stroke-width="2"/>
+    <text x="210" y="110" text-anchor="middle" font-size="11" font-weight="bold" fill="#222" font-family="monospace">P</text>
+    <!-- medición -->
+    <line x1="160" y1="175" x2="260" y2="175" stroke="#ffd23f" stroke-width="1.5" stroke-dasharray="3 3"/>
+    <text x="210" y="195" text-anchor="middle" font-size="10" fill="#ffd23f" font-family="monospace">diámetro (mm)</text>
+    <!-- etiqueta crecimiento -->
+    <text x="290" y="105" font-size="9" fill="#8aa0c0" font-family="monospace">crecimiento</text>
+    <text x="290" y="120" font-size="9" fill="#8aa0c0" font-family="monospace">bacteriano</text>
+  </svg>`,
+
+  /* ---- N4: campo oscuro ---- */
+  darkfield: `
+  <svg viewBox="0 0 420 200" role="img" aria-label="Microscopía de campo oscuro">
+    <rect width="420" height="200" fill="#000" rx="12"/>
+    <!-- fondo negro con espiroquetas brillando -->
+    <g stroke="#22e0ff" stroke-width="3" fill="none" stroke-linecap="round">
+      <path d="M60 80 Q 70 50 80 80 T 100 80 T 120 80"/>
+      <path d="M180 60 Q 190 30 200 60 T 220 60 T 240 60"/>
+      <path d="M280 110 Q 290 80 300 110 T 320 110 T 340 110"/>
+      <path d="M100 150 Q 110 120 120 150 T 140 150 T 160 150"/>
+    </g>
+    <!-- brillo -->
+    <g fill="#22e0ff" opacity=".6">
+      <circle cx="80" cy="80" r="2"/>
+      <circle cx="200" cy="60" r="2"/>
+      <circle cx="300" cy="110" r="2"/>
+      <circle cx="120" cy="150" r="2"/>
+    </g>
+    <text x="210" y="185" text-anchor="middle" font-size="11" fill="#22e0ff" font-family="monospace">Microscopía de campo oscuro · fondo negro</text>
+    <text x="210" y="30" text-anchor="middle" font-size="10" fill="#8aa0c0" font-family="monospace">Solo con muestra fresca y experiencia</text>
+  </svg>`,
+
+  /* ---- N4: flujo diagnóstico ---- */
+  flow: `
+  <svg viewBox="0 0 420 160" role="img" aria-label="Flujo diagnóstico de sífilis">
+    <rect width="420" height="160" fill="#0a1220" rx="12"/>
+    <defs>
+      <marker id="aFl" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+        <path d="M0 0 L6 3 L0 6 Z" fill="#22e0ff"/>
+      </marker>
+    </defs>
+    <g font-family="monospace" text-anchor="middle">
+      <rect x="20" y="45" width="110" height="60" rx="10" fill="#151f36" stroke="#22e0ff" stroke-width="2"/>
+      <text x="75" y="72" font-size="11" fill="#e6f1ff">Muestra</text>
+      <text x="75" y="88" font-size="9" fill="#8aa0c0">adecuada</text>
+      <line x1="130" y1="75" x2="155" y2="75" stroke="#22e0ff" stroke-width="2" marker-end="url(#aFl)"/>
+      <rect x="160" y="45" width="110" height="60" rx="10" fill="#151f36" stroke="#ffd23f" stroke-width="2"/>
+      <text x="215" y="72" font-size="11" fill="#e6f1ff">Prueba</text>
+      <text x="215" y="88" font-size="9" fill="#8aa0c0">validada</text>
+      <line x1="270" y1="75" x2="295" y2="75" stroke="#22e0ff" stroke-width="2" marker-end="url(#aFl)"/>
+      <rect x="300" y="45" width="110" height="60" rx="10" fill="#151f36" stroke="#3ddc84" stroke-width="2"/>
+      <text x="355" y="68" font-size="11" fill="#e6f1ff">Interpretar</text>
+      <text x="355" y="82" font-size="9" fill="#8aa0c0">+ historia</text>
+      <text x="355" y="96" font-size="9" fill="#8aa0c0">+ examen clínico</text>
+    </g>
+    <text x="210" y="145" text-anchor="middle" font-size="10" fill="#8aa0c0" font-family="monospace">Diagrama conceptual · no es una fotografía de práctica</text>
+  </svg>`,
+
+  /* ---- N5: penicilina benzatínica ---- */
+  penicillin: `
+  <svg viewBox="0 0 420 180" role="img" aria-label="Penicilina G benzatínica">
+    <rect width="420" height="180" fill="#0a1220" rx="12"/>
+    <!-- jeringa -->
+    <g transform="translate(120,90)">
+      <rect x="-60" y="-12" width="120" height="24" rx="6" fill="#3ddc84" opacity=".85"/>
+      <rect x="-70" y="-18" width="14" height="36" rx="6" fill="#2a9b5a"/>
+      <rect x="60" y="-6" width="30" height="12" rx="3" fill="#2a9b5a"/>
+      <polygon points="90,-8 110,0 90,8" fill="#ffd23f"/>
+      <!-- líquido -->
+      <rect x="-40" y="-10" width="60" height="20" rx="4" fill="#7ff0b0"/>
+    </g>
+    <!-- etiqueta -->
+    <g transform="translate(280,70)" font-family="monospace" text-anchor="middle">
+      <text y="0" font-size="12" fill="#3ddc84" font-weight="bold">Penicilina G</text>
+      <text y="16" font-size="12" fill="#3ddc84" font-weight="bold">benzatínica</text>
+      <text y="40" font-size="10" fill="#8aa0c0">primaria · secundaria</text>
+      <text y="54" font-size="10" fill="#8aa0c0">latente temprana</text>
+    </g>
+    <text x="210" y="170" text-anchor="middle" font-size="10" fill="#8aa0c0" font-family="monospace">Tratamiento de referencia según guías clínicas</text>
+  </svg>`,
+
+  /* ---- N5: neurosífilis tratamiento ---- */
+  neuroTx: `
+  <svg viewBox="0 0 420 180" role="img" aria-label="Neurosífilis: penicilina G acuosa intravenosa">
+    <rect width="420" height="180" fill="#0a1220" rx="12"/>
+    <!-- gotero -->
+    <g transform="translate(140,20)">
+      <rect x="-20" y="0" width="40" height="70" rx="20" fill="#1a2540" stroke="#ff4d5e" stroke-width="2"/>
+      <rect x="-16" y="20" width="32" height="46" rx="16" fill="#ff7fb8" opacity=".7"/>
+      <line x1="0" y1="70" x2="0" y2="120" stroke="#ff4d5e" stroke-width="2"/>
+      <circle cx="0" cy="125" r="4" fill="#ff4d5e"/>
+    </g>
+    <!-- brazo con IV -->
+    <g transform="translate(280,90)">
+      <rect x="-40" y="-12" width="100" height="26" rx="13" fill="#ffd8a8"/>
+      <line x1="-20" y1="0" x2="-20" y2="-30" stroke="#ff4d5e" stroke-width="2"/>
+      <text x="10" y="55" text-anchor="middle" font-size="10" fill="#8aa0c0" font-family="monospace">vía IV</text>
+    </g>
+    <g transform="translate(210,160)" font-family="monospace" text-anchor="middle">
+      <text y="0" font-size="11" fill="#ffb3d4">Neurosífilis, ocular u ótica</text>
+      <text y="14" font-size="10" fill="#8aa0c0">Penicilina G acuosa intravenosa · manejo especializado</text>
+    </g>
+  </svg>`,
+
+  /* ---- N5: no automedicarse ---- */
+  noSelfMed: `
+  <svg viewBox="0 0 420 180" role="img" aria-label="No automedicarse ni compartir antibióticos">
+    <rect width="420" height="180" fill="#0a1220" rx="12"/>
+    <!-- pastillas tachadas -->
+    <g transform="translate(130,90)">
+      <g fill="#ff4d5e" opacity=".8">
+        <ellipse cx="-25" cy="-20" rx="18" ry="10" transform="rotate(30 -25 -20)"/>
+        <ellipse cx="20" cy="-10" rx="18" ry="10" transform="rotate(-20 20 -10)"/>
+        <ellipse cx="-15" cy="25" rx="18" ry="10" transform="rotate(45 -15 25)"/>
+        <ellipse cx="25" cy="20" rx="18" ry="10" transform="rotate(-30 25 20)"/>
+      </g>
+      <circle r="55" fill="none" stroke="#ff4d5e" stroke-width="3"/>
+      <line x1="-40" y1="-40" x2="40" y2="40" stroke="#ff4d5e" stroke-width="4"/>
+      <line x1="40" y1="-40" x2="-40" y2="40" stroke="#ff4d5e" stroke-width="4"/>
+    </g>
+    <g transform="translate(280,80)" font-family="monospace" text-anchor="middle">
+      <text y="0" font-size="12" fill="#ff4d5e" font-weight="bold">✗ Automedicarse</text>
+      <text y="18" font-size="12" fill="#ff4d5e" font-weight="bold">✗ Compartir antibióticos</text>
+      <text y="45" font-size="10" fill="#8aa0c0">El tratamiento lo define</text>
+      <text y="60" font-size="10" fill="#8aa0c0">el personal de salud</text>
+    </g>
+    <text x="210" y="170" text-anchor="middle" font-size="10" fill="#8aa0c0" font-family="monospace">Nunca automedicarse ni compartir antibióticos</text>
+  </svg>`,
+
+  /* ---- N5: prevención combinada ---- */
+  prevention: `
+  <svg viewBox="0 0 420 200" role="img" aria-label="Prevención combinada">
+    <rect width="420" height="200" fill="#0a1220" rx="12"/>
+    <text x="210" y="25" text-anchor="middle" font-size="11" fill="#ffd23f" font-family="monospace" font-weight="bold">Ninguna medida aislada elimina todo riesgo</text>
+    <g font-family="monospace" text-anchor="middle">
+      <!-- condón -->
+      <g transform="translate(70,90)">
+        <circle r="35" fill="#3ddc84" opacity=".85"/>
+        <text y="6" font-size="26">🛡️</text>
+        <text y="55" font-size="10" fill="#3ddc84">Condón</text>
+        <text y="68" font-size="9" fill="#8aa0c0">barrera</text>
+      </g>
+      <!-- prueba -->
+      <g transform="translate(160,90)">
+        <circle r="35" fill="#22e0ff" opacity=".85"/>
+        <text y="6" font-size="26">🧪</text>
+        <text y="55" font-size="10" fill="#22e0ff">Prueba</text>
+        <text y="68" font-size="9" fill="#8aa0c0">ITS</text>
+      </g>
+      <!-- prenatal -->
+      <g transform="translate(250,90)">
+        <circle r="35" fill="#b78cff" opacity=".85"/>
+        <text y="6" font-size="26">🤰</text>
+        <text y="55" font-size="10" fill="#d8c4ff">Prenatal</text>
+        <text y="68" font-size="9" fill="#8aa0c0">tamizaje</text>
+      </g>
+      <!-- parejas -->
+      <g transform="translate(340,90)">
+        <circle r="35" fill="#ffd23f" opacity=".85"/>
+        <text y="6" font-size="26">🤝</text>
+        <text y="55" font-size="10" fill="#ffd23f">Parejas</text>
+        <text y="68" font-size="9" fill="#8aa0c0">aviso confidencial</text>
+      </g>
+    </g>
+    <text x="210" y="190" text-anchor="middle" font-size="10" fill="#8aa0c0" font-family="monospace">Prevención combinada: barreras + pruebas + tratamiento + atención</text>
+  </svg>`
+};
+
+/* =========================================================
+   3) BANCO DE PREGUNTAS (25 decisiones · 5 niveles · cada una con imagen)
+   ========================================================= */
+const QUESTIONS = [
+/* ---------- NIVEL 0 · IDENTIDAD Y HÁBITAT ---------- */
+{lvl:0, key:true, img:'spirochete',
+ q:"El laboratorio recibe una muestra y preguntan: ¿qué tipo de microorganismo es Treponema pallidum?",
+ o:["Coco esférico","Bacilo en forma de bastón","Espiroqueta helicoidal, delgada y flexible","Hongo filamentoso"],
+ a:2,
+ h:"Observa la forma de la bacteria en la ilustración.",
+ e:"T. pallidum es una espiroqueta: bacteria helicoidal, muy delgada y flexible, con movimiento característico tipo sacacorchos. No se observa bien con microscopía óptica convencional ni se tiñe de forma fiable con Gram."},
+
+{lvl:0, img:'spirochete',
+ q:"Observa la ilustración. ¿Qué movimiento caracteriza a T. pallidum?",
+ o:["Inmóvil","Movimiento tipo sacacorchos","Movimiento por flagelos largos","Solo se mueve por deslizamiento"],
+ a:1,
+ h:"La bacteria 'gira' sobre su eje al desplazarse.",
+ e:"Su forma helicoidal le permite un movimiento característico tipo sacacorchos. Es una ilustración didáctica: no sustituye una microfotografía real (CDC, 2024)."},
+
+{lvl:0, img:'reservoir',
+ q:"En la ilustración, la persona infectada transmite a distintos órganos. ¿Cuál es el reservorio principal de T. pallidum?",
+ o:["Animales domésticos","Agua estancada","El ser humano infectado","Los alimentos crudos"],
+ a:2,
+ h:"Observa quién es la fuente en la imagen.",
+ e:"El reservorio principal es el ser humano infectado. Entra por mucosas o pequeñas abrasiones durante el contacto sexual con lesiones infecciosas. La infección puede ser sistémica."},
+
+{lvl:0, img:'gramFail',
+ q:"En la ilustración, el portaobjetos teñido con Gram aparece vacío. ¿Por qué no se observa T. pallidum con esta tinción?",
+ o:["Porque es un virus","Porque es demasiado delgada y no se tiñe de forma fiable con Gram","Porque solo crece en agar","Porque es un hongo"],
+ a:1,
+ h:"La bacteria es demasiado delgada para la tinción de Gram.",
+ e:"T. pallidum no se observa bien con microscopía óptica convencional ni se tiñe de manera confiable con Gram. Se requieren técnicas apropiadas como la microscopía de campo oscuro."},
+
+{lvl:0, img:'systemic',
+ q:"Observa la ilustración: la bacteria viaja por sangre y llega a varios órganos. ¿Qué significa que la infección sea sistémica?",
+ o:["Que solo afecta la piel","Que puede diseminarse a piel, mucosas, sistema nervioso, ojos y otros órganos","Que se cura sola","Que solo afecta el aparato reproductor"],
+ a:1,
+ h:"La infección no se queda en el sitio de entrada.",
+ e:"La infección puede diseminarse por sangre y alcanzar piel, mucosas, sistema nervioso, ojos y otros órganos. Por eso el reservorio no es lo mismo que el sitio de lesión."},
+
+/* ---------- NIVEL 1 · TRANSMISIÓN ---------- */
+{lvl:1, key:true, img:'transmission',
+ q:"Observa la ilustración. ¿Qué dos vías de transmisión se representan?",
+ o:["Aérea y por alimentos","Sexual y vertical (de madre a hijo durante el embarazo)","Por vectores y por agua","Por saliva y por contacto casual"],
+ a:1,
+ h:"Una vía ocurre entre personas sexualmente activas; la otra, durante el embarazo.",
+ e:"La sífilis se transmite por contacto directo con lesiones infecciosas durante sexo vaginal, anal u oral, y por transmisión vertical: de una persona embarazada al feto a través de la placenta."},
+
+{lvl:1, img:'myths',
+ q:"La ilustración tacha abrazos, cubiertos, baño y saliva. ¿Qué le explicas a alguien que cree que se contagia por estas vías?",
+ o:["Sí, se transmite por saliva","Sí, por contacto casual","No, no se transmite por abrazos, cubiertos, baño ni contacto casual","Solo por transfusiones"],
+ a:2,
+ h:"Observa qué símbolos están tachados en rojo.",
+ e:"No se transmite por abrazar, compartir cubiertos, usar el mismo baño ni por contacto casual. Se transmite por contacto directo con lesiones infecciosas durante sexo vaginal, anal u oral, o por vía transplacentaria."},
+
+{lvl:1, img:'vertical',
+ q:"Observa la ilustración: la placenta está resaltada. ¿Cómo se transmite la sífilis al feto?",
+ o:["Por la leche materna","A través de la placenta (transmisión vertical)","Por el aire del hospital","Por compartir ropa"],
+ a:1,
+ h:"En el embarazo, la bacteria atraviesa la placenta.",
+ e:"En el embarazo, T. pallidum puede atravesar la placenta y causar sífilis congénita. Es la llamada transmisión vertical."},
+
+{lvl:1, img:'condom',
+ q:"La ilustración muestra un escudo y zonas marcadas que quedan al descubierto. ¿Qué le explicas a alguien que cree que el condón le protege al 100%?",
+ o:["El condón elimina todo riesgo","El condón reduce el riesgo, pero no cubre todas las zonas donde puede haber lesiones","El condón no sirve para nada","Solo el condón femenino protege"],
+ a:1,
+ h:"Observa las zonas que el escudo no cubre.",
+ e:"Los condones reducen el riesgo, pero no cubren todas las zonas donde puede haber lesiones. La prevención combina barreras, pruebas, tratamiento y atención prenatal; ninguna medida aislada elimina todo riesgo."},
+
+{lvl:1, img:'earlyTx',
+ q:"Observa la línea de tiempo. ¿En qué etapas la transmisión sexual es más frecuente?",
+ o:["Solo en la terciaria","Durante las etapas tempranas, cuando hay lesiones infecciosas","Solo en la latente tardía","Nunca hay transmisión sexual"],
+ a:1,
+ h:"Mira las etapas marcadas con '↑ alto'.",
+ e:"La transmisión es más frecuente durante las etapas tempranas, cuando hay lesiones infecciosas (primaria y secundaria). En la latente tardía y terciaria el riesgo sexual disminuye."},
+
+/* ---------- NIVEL 2 · ETAPAS Y SÍNTOMAS ---------- */
+{lvl:2, img:'stages',
+ q:"Observa la ilustración con las 4 etapas. ¿En qué orden aparecen?",
+ o:["Terciaria → latente → secundaria → primaria","Primaria → secundaria → latente → terciaria","Latente → primaria → terciaria → secundaria","Secundaria → primaria → latente → terciaria"],
+ a:1,
+ h:"La línea de tiempo va de semanas a años.",
+ e:"La sífilis progresa: primaria (chancro) → secundaria (erupción) → latente (sin síntomas visibles) → terciaria (daño a órganos años después)."},
+
+{lvl:2, key:true, img:'chancro',
+ q:"Observa la ilustración. La lesión marcada en el sitio de entrada no duele. ¿Qué etapa representa y cómo se llama la lesión?",
+ o:["Primaria · chancro","Secundaria · erupción","Latente · sin síntomas","Terciaria · goma"],
+ a:0,
+ h:"Es la primera manifestación, en el sitio exacto de entrada.",
+ e:"La sífilis primaria se caracteriza por un chancro, a menudo indoloro, en el sitio de entrada. Puede desaparecer sin tratamiento, pero la bacteria no se elimina: hay que tratarla."},
+
+{lvl:2, img:'secondary',
+ q:"La ilustración muestra erupción en torso, palmas y plantas. ¿Qué etapa es?",
+ o:["Primaria","Secundaria","Latente","Terciaria"],
+ a:1,
+ h:"La erupción que incluye palmas y plantas es muy característica.",
+ e:"La sífilis secundaria incluye erupción (incluidas palmas y plantas), lesiones mucosas, fiebre, ganglios y malestar."},
+
+{lvl:2, img:'latent',
+ q:"La ilustración muestra una persona sin síntomas y un tubo positivo. ¿Qué etapa puede ser?",
+ o:["Latente","Terciaria siempre","No puede ser sífilis","Primaria siempre"],
+ a:0,
+ h:"No hay síntomas visibles, pero las pruebas pueden ser positivas.",
+ e:"En la etapa latente no hay síntomas visibles, pero las pruebas serológicas pueden ser positivas. Por eso el tamizaje es clave."},
+
+{lvl:2, img:'neuroOcularOtic',
+ q:"La ilustración muestra cerebro, ojo y oído. ¿En qué momento pueden aparecer neurosífilis, sífilis ocular u ótica?",
+ o:["Solo en la primaria","Solo en la terciaria","En cualquier etapa","Solo en recién nacidos"],
+ a:2,
+ h:"No están limitadas a una sola etapa.",
+ e:"Neurosífilis, sífilis ocular y ótica pueden aparecer en cualquier etapa de la enfermedad."},
+
+/* ---------- NIVEL 3 · DIAGNÓSTICO DE LABORATORIO ---------- */
+{lvl:3, key:true, img:'serology',
+ q:"Observa la ilustración: hay dos familias de pruebas. ¿Qué busca la serología en sangre?",
+ o:["Anticuerpos no treponémicos y treponémicos","La bacteria cultivada en agar","Colonias en placa","Pruebas bioquímicas como catalasa"],
+ a:0,
+ h:"En suero/plasma se estudian dos familias de pruebas que se complementan.",
+ e:"En suero/plasma se realizan pruebas no treponémicas (RPR, VDRL) y treponémicas (TP-PA, EIA/CIA). Se complementan con la historia y el examen clínico."},
+
+{lvl:3, img:'nontrep',
+ q:"La ilustración muestra RPR y VDRL con títulos. ¿Qué caracteriza a las pruebas no treponémicas?",
+ o:["Detectan anticuerpos reagínicos, se reportan con título y ayudan al seguimiento","Confirman la bacteria directamente","Son cultivos","Miden el halo de inhibición"],
+ a:0,
+ h:"Detectan anticuerpos reagínicos y se reportan con título.",
+ e:"Las pruebas no treponémicas (RPR, VDRL) detectan anticuerpos reagínicos, se reportan con título y ayudan al seguimiento. Las treponémicas confirman el diagnóstico."},
+
+{lvl:3, img:'noCulture',
+ q:"La ilustración tacha una caja Petri. ¿Por qué NO se puede cultivar T. pallidum en agar?",
+ o:["Porque es un virus","Porque no crece en medios artificiales convencionales y no se describen colonias","Porque solo crece en sangre","Porque necesita antibióticos para crecer"],
+ a:1,
+ h:"Piensa por qué no se describen colonias, hemólisis ni crecimiento en agar.",
+ e:"T. pallidum subsp. pallidum no crece en medios artificiales convencionales. Por eso no se describen colonias, hemólisis ni crecimiento en agar. El diagnóstico se apoya en serología y detección directa."},
+
+{lvl:3, img:'halo',
+ q:"Observa la ilustración de una prueba de difusión en disco. ¿Qué representa la zona clara alrededor del disco?",
+ o:["El halo de inhibición: zona sin crecimiento bacteriano","Una colonia gigante","Un error de tinción","El antibiótico derramado"],
+ a:0,
+ h:"Es la zona donde el antibiótico impide el crecimiento.",
+ e:"El halo de inhibición es la zona sin crecimiento alrededor del disco. Su diámetro se mide en milímetros y se interpreta con criterios del laboratorio. Ver un halo no basta por sí solo para afirmar sensibilidad: se requieren criterios validados (EUCAST)."},
+
+{lvl:3, img:'darkfield',
+ q:"Observa la imagen de campo oscuro: fondo negro con espirales brillantes. ¿Para qué sirve esta técnica?",
+ o:["Para ver treponemas vivos en exudado de lesiones apropiadas","Para ver colonias en agar","Para hacer antibiograma","Para teñir con Gram"],
+ a:0,
+ h:"Permite valorar forma y movimiento en muestras frescas.",
+ e:"La microscopía de campo oscuro observa treponemas vivos en exudado de lesiones apropiadas y permite valorar forma y movimiento. No se recomienda en lesiones orales por treponemas comensales."},
+
+{lvl:3, img:'flow',
+ q:"Observa el diagrama conceptual. ¿Cuál es el flujo correcto para diagnosticar sífilis?",
+ o:["Muestra adecuada → prueba validada → interpretación con historia y examen clínico","Colonia → tinción Gram → antibiograma","Cultivo en agar → bioquímicas → halo","PCR → antibiograma → receta"],
+ a:0,
+ h:"Sustituye la placa por el flujo: muestra, prueba, interpretación.",
+ e:"En el esquema conceptual, sustituye la placa por el flujo: muestra adecuada → prueba validada → interpretación con historia y examen clínico. El laboratorio y el personal clínico seleccionan la muestra según etapa, síntomas y prueba disponible."},
+
+/* ---------- NIVEL 4 · TRATAMIENTO Y PREVENCIÓN ---------- */
+{lvl:4, key:true, img:'penicillin',
+ q:"Observa la jeringa con penicilina. ¿Cuál es el tratamiento de referencia para sífilis primaria, secundaria y latente temprana?",
+ o:["Penicilina G benzatínica","Metronidazol","Vancomicina","Solo antivirales"],
+ a:0,
+ h:"Es un antibiótico clásico recomendado por las guías.",
+ e:"La penicilina G benzatínica es el tratamiento recomendado para sífilis primaria, secundaria y latente temprana, según las guías clínicas. Nunca automedicarse ni compartir antibióticos."},
+
+{lvl:4, img:'neuroTx',
+ q:"La ilustración muestra una vía intravenosa. ¿Qué requiere una persona con neurosífilis?",
+ o:["El mismo esquema que primaria","Evaluación especializada y esquema diferente con penicilina G acuosa intravenosa","Solo observación","Antibiograma por disco"],
+ a:1,
+ h:"Las formas neurológica, ocular u ótica requieren manejo especializado.",
+ e:"Las formas neurológica, ocular u ótica requieren evaluación especializada y un esquema diferente con penicilina G acuosa intravenosa."},
+
+{lvl:4, img:'noSelfMed',
+ q:"La ilustración tacha pastillas. ¿Qué le dices a alguien que se automedica con antibióticos que le sobraron?",
+ o:["Está bien si mejora","Nunca automedicarse ni compartir antibióticos; el tratamiento lo define el personal de salud","Que duplique la dosis","Que lo comparta con su pareja"],
+ a:1,
+ h:"Recuerda: no compartir antibióticos ni automedicarse.",
+ e:"Nunca automedicarse ni compartir antibióticos. El manejo requiere valoración clínica y el tratamiento lo define el personal de salud, considerando etapa, alergias y embarazo."},
+
+{lvl:4, img:'prevention',
+ q:"Observa la ilustración de prevención combinada. ¿Cuál es la acción más completa?",
+ o:["Usar condón correctamente, hacerse pruebas según exposición, tamizaje prenatal y avisar a parejas de forma confidencial","Solo lavarse las manos","Evitar todo contacto social","Compartir medicamentos"],
+ a:0,
+ h:"La prevención combina varias medidas; ninguna aislada elimina todo riesgo.",
+ e:"La prevención combina barreras (condón), pruebas según exposición, tratamiento y atención prenatal, y aviso confidencial a parejas. Ninguna medida aislada elimina todo riesgo (OMS, 2025)."}
+];
+
+/* =========================================================
+   4) TARJETAS INFORMATIVAS (antibiograma)
+   ========================================================= */
+const INFO_CARDS = {
+  3: `<div class="info-card">
+    <h4>🔬 ¿Para qué sirve el antibiograma? (y por qué NO aplica a T. pallidum)</h4>
+    <p><b>1. ¿Para qué sirve?</b> Permite estudiar si un antibiótico puede frenar el crecimiento de una bacteria. Se usa para elegir el tratamiento de una infección.</p>
+    <p><b>2. ¿Qué se observa cuando hay sensibilidad?</b> En la prueba con discos se ve una zona sin crecimiento alrededor del disco: el <b>halo de inhibición</b>. Su diámetro se mide en milímetros y se interpreta con criterios del laboratorio (EUCAST).</p>
+    <p><b>3. ¿Qué antibióticos se usan para T. pallidum?</b> La <b>penicilina G benzatínica</b> es el tratamiento de referencia. En neurosífilis, ocular u ótica se usa <b>penicilina G acuosa intravenosa</b> con manejo especializado.</p>
+    <p><b>4. La excepción:</b> T. pallidum <b>no crece en medios artificiales rutinarios</b>. Por eso <b>no se hace antibiograma por difusión en disco</b> ni se describen colonias. El tratamiento se elige con guías clínicas, etapa, alergias, embarazo y valoración médica.</p>
+    <ul>
+      <li>No inventes catalasa, oxidasa ni fermentaciones para esta bacteria.</li>
+      <li>No dibujes una placa con colonias como si fuera un resultado real.</li>
+      <li>La serología y la detección directa son las alternativas diagnósticas.</li>
+    </ul>
+  </div>`
+};
+
+/* =========================================================
+   5) ESTADO
+   ========================================================= */
+const byLevel = LEVELS.map((_, i) => QUESTIONS.filter(q => q.lvl === i));
+const KEY_QUESTIONS = QUESTIONS.filter(q => q.key);
+
+const $ = id => document.getElementById(id);
+let S;
+
+function initState(){
+  S = {
+    level:0, qIndex:0,
+    points:0, decisions:0, retries:0,
+    wrongThisQ:0, disabled:new Set(), answered:false,
+    playerAnswers: {}
+  };
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === id));
+}
+
+/* =========================================================
+   6) RENDER
+   ========================================================= */
+function renderHUD(){
+  $('hudLevel').textContent = LEVELS[S.level].hud;
+  $('pointsPill').textContent = '⭐ ' + S.points + ' pts';
+  $('levelName').textContent = LEVELS[S.level].name;
+
+  const track = $('levelTrack');
+  track.innerHTML = '';
+  LEVELS.forEach((_, i) => {
+    const seg = document.createElement('div');
+    seg.className = 'seg';
+    if(i < S.level) seg.classList.add('done');
+    else if(i === S.level) seg.classList.add('now');
+    track.appendChild(seg);
+  });
+
+  const total = byLevel[S.level].length;
+  $('qCounter').textContent = `Decisión ${S.qIndex + 1} de ${total}`;
+}
+
+function showQuestion(){
+  S.answered = false;
+  S.wrongThisQ = 0;
+  S.disabled.clear();
+
+  const q = byLevel[S.level][S.qIndex];
+  const globalIdx = QUESTIONS.indexOf(q);
+
+  renderHUD();
+
+  $('cardIcon').textContent = LEVELS[S.level].icon;
+  $('qText').innerHTML = q.q + (q.key ? '<span class="key-badge">⭐ CLAVE PARA EL INFORME</span>' : '');
+
+  // ---- ILUSTRACIÓN (siempre presente) ----
+  const imgC = $('imgContainer');
+  imgC.innerHTML = '';
+  if(q.img && SVG[q.img]){
+    imgC.innerHTML = `
+      <div class="img-box">
+        ${SVG[q.img]}
+        <div class="img-caption">
+          📐 <b>Ilustración didáctica</b> · qué se ve: <i>concepto de ${q.img.replace(/_/g,' ')}</i> ·
+          qué <b>NO</b> permite concluir: no es una microfotografía real ni resultado de laboratorio.
+        </div>
+      </div>`;
+  }
+
+  // ---- OPCIONES ----
+  const opts = $('options');
+  opts.innerHTML = '';
+  const letters = ['A','B','C','D'];
+
+  q.o.forEach((text, idx) => {
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.dataset.idx = idx;
+    b.innerHTML = `<span class="key">${letters[idx]}</span><span>${text}</span>`;
+    b.onclick = () => onOption(idx);
+    opts.appendChild(b);
+  });
+
+  const fb = $('feedback');
+  fb.className = 'feedback';
+  fb.innerHTML = '';
+
+  $('infoContainer').innerHTML = INFO_CARDS[S.level] || '';
+
+  S.currentGlobal = globalIdx;
+}
+
+/* =========================================================
+   7) RESPUESTA
+   ========================================================= */
+function onOption(idx){
+  if(S.answered) return;
+  const q = byLevel[S.level][S.qIndex];
+  const btns = [...$('options').children];
+
+  if(idx === q.a){
+    S.answered = true;
+    btns.forEach(b => {
+      b.disabled = true;
+      if(Number(b.dataset.idx) === q.a) b.classList.add('correct');
+    });
+
+    S.playerAnswers[S.currentGlobal] = q.o[q.a];
+    const earned = S.wrongThisQ === 0 ? 100 : 50;
+    S.points += earned;
+    bumpPoints();
+    renderHUD();
+
+    showFeedback('ok',
+      `✅ ¡Correcto! +${earned} pts`,
+      q.e,
+      'Continuar',
+      advance,
+      false
+    );
+
+  } else {
+    S.disabled.add(idx);
+    S.wrongThisQ++;
+    const btn = btns.find(b => Number(b.dataset.idx) === idx);
+    btn.classList.add('wrong');
+    btn.disabled = true;
+
+    if(S.wrongThisQ >= 2){
+      S.answered = true;
+      btns.forEach(b => {
+        b.disabled = true;
+        if(Number(b.dataset.idx) === q.a) b.classList.add('correct');
+      });
+      S.playerAnswers[S.currentGlobal] = q.o[q.a];
+      showFeedback('bad',
+        '❌ Respuesta incorrecta',
+        `<b>Respuesta correcta:</b> ${q.o[q.a]}.<br><br>${q.e}`,
+        'Continuar',
+        advance,
+        false
+      );
+    } else {
+      S.retries++;
+      showFeedback('hint',
+        '❌ No exactamente…',
+        `💡 <b>Pista:</b> ${q.h}<br><br>Puedes reintentar. Si aciertas ahora, ganas 50 pts.`,
+        '🔁 Reintentar',
+        clearFeedbackForRetry,
+        true
+      );
+    }
+  }
+}
+
+function clearFeedbackForRetry(){
+  const fb = $('feedback');
+  fb.className = 'feedback';
+  fb.innerHTML = '';
+  [...$('options').children].forEach(b => {
+    if(S.disabled.has(Number(b.dataset.idx))){
+      b.disabled = true;
+      b.classList.add('dim');
+    }
+  });
+}
+
+function showFeedback(type, title, text, btnText, action, isRetry){
+  const fb = $('feedback');
+  fb.className = 'feedback show ' + type;
+  fb.innerHTML = `
+    <div class="fb-title">${title}</div>
+    <div class="fb-text">${text}</div>
+    <button class="btn-next ${isRetry ? 'retry' : ''}" id="fbBtn">${btnText}</button>
+  `;
+  $('fbBtn').onclick = action;
+}
+
+function bumpPoints(){
+  const p = $('pointsPill');
+  p.classList.add('bump');
+  setTimeout(() => p.classList.remove('bump'), 280);
+}
+
+/* =========================================================
+   8) AVANCE
+   ========================================================= */
+function advance(){
+  S.decisions++;
+
+  if(S.qIndex + 1 < byLevel[S.level].length){
+    S.qIndex++;
+    showQuestion();
+    return;
+  }
+
+  if(S.level + 1 < LEVELS.length){
+    S.level++;
+    S.qIndex = 0;
+    showQuestion();
+    return;
+  }
+
+  finishGame();
+}
+
+/* =========================================================
+   9) PANTALLA FINAL
+   ========================================================= */
+function finishGame(){
+  const max = QUESTIONS.length * 100;
+  const pct = Math.round((S.points / max) * 100);
+
+  $('statPoints').textContent    = S.points;
+  $('statDecisions').textContent = S.decisions;
+  $('statRetries').textContent   = S.retries;
+
+  if(pct >= 90){
+    $('endIcon').textContent  = '🏆';
+    $('endTitle').textContent = '¡Excelencia en salud pública!';
+    $('endTitle').style.color = 'var(--green)';
+    $('endText').textContent  =
+      'Dominas la identidad de T. pallidum, sus vías de transmisión, sus etapas, las pruebas de laboratorio y la prevención. ' +
+      'Recuerda compartir esta información sin estigma: cualquier persona sexualmente activa puede necesitar evaluación.';
+  } else if(pct >= 70){
+    $('endIcon').textContent  = '🎖️';
+    $('endTitle').textContent = '¡Muy buen trabajo!';
+    $('endTitle').style.color = 'var(--cyan)';
+    $('endText').textContent  =
+      'Tienes una base sólida. Repasa los puntos donde usaste reintentos: ' +
+      'la diferencia entre pruebas treponémicas y no treponémicas, y la razón por la que no se cultiva ni se hace antibiograma a T. pallidum.';
+  } else if(pct >= 50){
+    $('endIcon').textContent  = '📘';
+    $('endTitle').textContent = 'Buen intento, sigue aprendiendo';
+    $('endTitle').style.color = 'var(--yellow)';
+    $('endText').textContent  =
+      'Vas por buen camino. Vuelve a repasar las etapas de la sífilis y el flujo de diagnóstico: ' +
+      'muestra adecuada → prueba validada → interpretación con historia y examen clínico.';
+  } else {
+    $('endIcon').textContent  = '🔁';
+    $('endTitle').textContent = 'Refuerza el contenido';
+    $('endTitle').style.color = 'var(--red)';
+    $('endText').textContent  =
+      'La sífilis es prevenible y curable con diagnóstico y tratamiento oportunos. ' +
+      'Vuelve a la presentación y repasa: identidad bacteriana, transmisión, etapas, serología y penicilina como tratamiento de referencia.';
+  }
+
+  const list = $('keyQuestionsList');
+  list.innerHTML = '';
+  KEY_QUESTIONS.forEach((q, i) => {
+    const idxGlobal = QUESTIONS.indexOf(q);
+    const resp = S.playerAnswers[idxGlobal] || '(sin responder)';
+    const li = document.createElement('li');
+    li.innerHTML = `<b>Pregunta ${i+1} · ${LEVELS[q.lvl].name}</b>${q.q}<br><em style="color:#8aa0c0">Tu respuesta: ${resp}</em>`;
+    list.appendChild(li);
+  });
+
+  showScreen('screen-end');
+}
+
+/* =========================================================
+   10) EXPORTAR REGISTRO
+   ========================================================= */
+function exportRecord(){
+  const pct = Math.round((S.points / (QUESTIONS.length * 100)) * 100);
+  const reflexion = $('reflection').value.trim() || '(sin escribir todavía)';
+  const t1 = $('tester1').value.trim() || '(sin registrar)';
+  const t2 = $('tester2').value.trim() || '(sin registrar)';
+  const t3 = $('tester3').value.trim() || '(sin registrar)';
+
+  let txt = '';
+  txt += '=====================================================\n';
+  txt += '  REGISTRO DE PRUEBA · VIDEOJUEGO TREPOWAR\n';
+  txt += '  Proyecto: Dale play a la ciencia · Bacteriólogos en acción\n';
+  txt += '  CBTIS No. 6 · Docente: María Dolores Canuto Cortés\n';
+  txt += '  Tema: Treponema pallidum · Sífilis\n';
+  txt += '=====================================================\n\n';
+
+  txt += '--- RESULTADOS DEL JUGADOR ---\n';
+  txt += `Puntos obtenidos: ${S.points} / ${QUESTIONS.length * 100} (${pct}%)\n`;
+  txt += `Decisiones tomadas: ${S.decisions}\n`;
+  txt += `Reintentos usados: ${S.retries}\n\n`;
+
+  txt += '--- LAS 5 PREGUNTAS CLAVE DEL VIDEOJUEGO ---\n';
+  KEY_QUESTIONS.forEach((q, i) => {
+    const idxGlobal = QUESTIONS.indexOf(q);
+    const resp = S.playerAnswers[idxGlobal] || '(sin responder)';
+    txt += `\n${i+1}. [${LEVELS[q.lvl].name}] ${q.q}\n`;
+    txt += `   Respuesta registrada: ${resp}\n`;
+  });
+
+  txt += '\n--- REFLEXIÓN DEL JUGADOR ---\n';
+  txt += reflexion + '\n\n';
+
+  txt += '--- PRUEBA CON 3 PERSONAS (ANÓNIMO) ---\n';
+  txt += 'No se registran nombres ni datos de salud.\n\n';
+  txt += 'Persona 1:\n' + t1 + '\n\n';
+  txt += 'Persona 2:\n' + t2 + '\n\n';
+  txt += 'Persona 3:\n' + t3 + '\n\n';
+
+  txt += '--- DECLARACIÓN DE ILUSTRACIONES E IA ---\n';
+  txt += 'Las 25 ilustraciones de este videojuego son SVG didácticos creados para\n';
+  txt += 'apoyar la comprensión de conceptos. No son microfotografías reales ni\n';
+  txt += 'imágenes generadas por IA generativa. La morfología bacteriana y los\n';
+  txt += 'resultados de laboratorio reales requieren técnicas apropiadas y\n';
+  txt += 'muestras verificables (CDC, 2024; Papp et al., 2024).\n\n';
+
+  txt += '--- REFERENCIAS (APA 7) ---\n';
+  txt += 'Centers for Disease Control and Prevention. (2024). Syphilis—STI\n';
+  txt += '  Treatment Guidelines. https://www.cdc.gov/std/treatment-guidelines/syphilis.htm\n';
+  txt += 'Papp, J. R., et al. (2024). CDC laboratory recommendations for syphilis\n';
+  txt += '  testing, United States, 2024. MMWR, 73(1), 1–32.\n';
+  txt += '  https://www.cdc.gov/mmwr/volumes/73/rr/tr7301a1.htm\n';
+  txt += 'World Health Organization. (2025, 29 de mayo). Syphilis.\n';
+  txt += '  https://www.who.int/news-room/fact-sheets/detail/syphilis\n';
+  txt += 'American Society for Microbiology & IDSA. (2018). A guide to utilization\n';
+  txt += '  of the microbiology laboratory for diagnosis of infectious diseases.\n';
+  txt += '  Clinical Infectious Diseases, 67(6), e1–e94.\n';
+  txt += 'Jawetz, Melnick, & Adelberg. (2023). Medical Microbiology (29.ª ed.).\n';
+  txt += '  McGraw Hill.\n';
+  txt += 'European Committee on Antimicrobial Susceptibility Testing. (s.f.).\n';
+  txt += '  Disk diffusion and quality control.\n';
+  txt += '  https://www.eucast.org/bacteria/methodology-and-instructions/disk-diffusion-and-quality-control/\n';
+
+  const blob = new Blob([txt], {type:'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'TREPOWAR_registro_prueba.txt';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+/* =========================================================
+   11) ARRANQUE
+   ========================================================= */
+function startGame(){
+  initState();
+  showScreen('screen-game');
+  showQuestion();
+}
+
+$('playBtn').onclick    = startGame;
+$('againBtn').onclick   = startGame;
+$('restartBtn').onclick = startGame;
+$('exportBtn').onclick  = exportRecord;
+</script>
+</body>
+</html>
